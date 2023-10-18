@@ -7,6 +7,7 @@
 # Proyecto: Contador Display 7 Segmentos con Multiplexación
 ![Tinkercad](./imágen/circuito.png)
 ![Tinkercad](./imágen/circuito02.png)
+![Tinkercad](./imágen/circuito03.png)
 # Descripción
 Codigo de la parte uno del parcial, esto permite que mediante botones se pueda manipular los segmentos.
 ```
