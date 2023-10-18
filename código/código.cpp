@@ -1,4 +1,4 @@
-// Definición de pines para segmentos y otros valores constantes
+// Definición de pines para los displays de 7 segmentos y pines para otros componentes
 #define A 10
 #define B 11
 #define C 5
@@ -6,18 +6,19 @@
 #define E 7
 #define F 9
 #define G 8
-#define CLAVIJA 2
-#define UNIDAD A4
-#define DECENA A5
-#define APAGADO 0
-#define TIMEDISPLAYON 10
-#define MOTOR_PIN 3
+#define CLAVIJA 2        // Pin del interruptor
+#define UNIDAD A4        // Pin para la unidad en el display de 7 segmentos
+#define DECENA A5        // Pin para la decena en el display de 7 segmentos
+#define APAGADO 0        // Estado de apagado
+#define TIMEDISPLAYON 10 // Tiempo de encendido del display
+#define MOTOR_PIN 3      // Pin para el motor
+#define LDR_PIN A1       // Pin para el fotodiodo
 
-const int sensorPin = A0; // Pin analógico para el sensor
+const int sensorPin = A0; // Pin para el sensor de temperatura
 
-int countDigit = 1;       // Contador para los dígitos en el display
-int isArduinoOn = 1;      // Control de encendido/apagado del Arduino
-int motorIsOn = 0;        // Control de encendido/apagado del motor
+int countDigit = 1;
+int isArduinoOn = 1;    // Estado del Arduino
+int motorIsOn = 0;      // Estado del motor
 
 // Función para verificar si un número es primo
 int esPrimo(int numero) {
@@ -42,8 +43,8 @@ int keypressed() {
     return APAGADO;
 }
 
-// Configuración inicial del Arduino
 void setup() {
+    // Configuración de pines
     pinMode(5, OUTPUT);
     pinMode(6, OUTPUT);
     pinMode(7, OUTPUT);
@@ -54,37 +55,40 @@ void setup() {
     pinMode(UNIDAD, OUTPUT);
     pinMode(DECENA, OUTPUT);
     pinMode(MOTOR_PIN, OUTPUT);
+    pinMode(LDR_PIN, INPUT); // Configura el pin del fotodiodo como entrada
     Serial.begin(9600);
-    printDigit(0);  
+    printDigit(0);
 }
 
-// Bucle principal del programa
 void loop() {
-    int sensorValue = analogRead(sensorPin); // Lectura del valor del sensor
-    float voltage = (sensorValue / 1023.0) * 5.0; // Conversión del valor del sensor a voltaje
-    float temperatureC = (voltage - 0.5) * 100.0; // Conversión del voltaje a temperatura en grados Celsius
+    int sensorValue = analogRead(sensorPin);
+    float voltage = (sensorValue / 1023.0) * 5.0;
+    float temperatureC = (voltage - 0.5) * 100.0;
+    int intensidadLuz = analogRead(LDR_PIN); // Lee la intensidad de luz del fotodiodo
 
-    // Comprobar si la temperatura es igual o mayor a 30 grados Celsius
     if (temperatureC >= 30.0) {
-        isArduinoOn = 0; // Apagar Arduino
-        digitalWrite(MOTOR_PIN, 0); // Apagar motor
-        digitalWrite(UNIDAD, LOW);  // Apagar segmento de unidades
-        digitalWrite(DECENA, LOW); // Apagar segmento de decenas
+        isArduinoOn = 0;
+        digitalWrite(MOTOR_PIN, 0);
+        digitalWrite(UNIDAD, LOW);
+        digitalWrite(DECENA, LOW);
+        digitalWrite(LDR_PIN, LOW);
     } else {
-        isArduinoOn = 1; // Encender Arduino
-        motorIsOn = 0;   // Apagar motor
+        isArduinoOn = 1;
+        motorIsOn = 0;
         if (isArduinoOn == 1) {
+            Serial.print("Intensidad de luz: ");
+            Serial.println(intensidadLuz);
             // Controlar el motor
             if (!motorIsOn) {
-                analogWrite(MOTOR_PIN, 150); // Encender motor
+                analogWrite(MOTOR_PIN, 150);
                 motorIsOn = 1;
             }
-            int interruptor = keypressed(); // Comprobar si el interruptor está presionado
-            printDigit(countDigit); // Mostrar el dígito actual en el display
+            int interruptor = keypressed();
+            printDigit(countDigit);
             if (interruptor == APAGADO) {
-                countDigit++; // Incrementar el contador de dígitos
+                countDigit++;
                 if (countDigit > 99) {
-                    countDigit = 0; // Volver a cero cuando se llega a 99
+                    countDigit = 0;
                 }
                 delay(TIMEDISPLAYON);
             } else {
@@ -121,7 +125,7 @@ void printDigit(int number) {
     delay(150);
 }
 
-// Función para controlar los segmentos del display de 7 segmentos
+// Función para mostrar un dígito en el display de 7 segmentos
 void display(int digit) {
     switch (digit) {
         case 0:
