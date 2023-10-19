@@ -709,4 +709,51 @@ void display(int digit) {
 }
 ```
 # Función principal
-# Diagrama de circuito
+```
+void loop() {
+    int sensorValue = analogRead(sensorPin);
+    float voltage = (sensorValue / 1023.0) * 5.0;
+    float temperatureC = (voltage - 0.5) * 100.0;
+    int intensidadLuz = analogRead(LDR_PIN); // Lee la intensidad de luz del fotodiodo
+
+    if (temperatureC >= 30.0) {
+        isArduinoOn = 0;
+        digitalWrite(MOTOR_PIN, 0);
+        digitalWrite(UNIDAD, LOW);
+        digitalWrite(DECENA, LOW);
+        digitalWrite(LDR_PIN, LOW);
+    } else {
+        isArduinoOn = 1;
+        motorIsOn = 0;
+        if (isArduinoOn == 1) {
+            Serial.print("Intensidad de luz: ");
+            Serial.println(intensidadLuz);
+            // Controlar el motor
+            if (!motorIsOn) {
+                analogWrite(MOTOR_PIN, 150);
+                motorIsOn = 1;
+            }
+            int interruptor = keypressed();
+            printDigit(countDigit);
+            if (interruptor == APAGADO) {
+                countDigit++;
+                if (countDigit > 99) {
+                    countDigit = 0;
+                }
+                delay(TIMEDISPLAYON);
+            } else {
+                for (int i = 0; i < 100; i++) {
+                    if (esPrimo(i)) {
+                        countDigit = i;
+                        printDigit(countDigit);
+                        delay(TIMEDISPLAYON);
+                    }
+                }
+            }
+            Serial.print("Temperatura: ");
+            Serial.print(temperatureC);
+            Serial.println(" °C");
+        }
+    }
+}
+```
