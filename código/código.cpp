@@ -92,6 +92,7 @@ void loop() {
                 }
                 delay(TIMEDISPLAYON);
             } else {
+                digitalWrite(MOTOR_PIN, 0);//el motor al estar el switch en primos se detendra
                 for (int i = 0; i < 100; i++) {
                     if (esPrimo(i)) {
                         countDigit = i;
