@@ -564,17 +564,21 @@ void loop() {
             int interruptor = keypressed();
             printDigit(countDigit);
             if (interruptor == APAGADO) {
-                countDigit++;
-                if (countDigit > 99) {
-                    countDigit = 0;
+                if (intensidadLuz < 10){
+                    countDigit++;
+                    if (countDigit > 99) {
+                        countDigit = 0;
+                    }
+                    delay(TIMEDISPLAYON);
                 }
-                delay(TIMEDISPLAYON);
             } else {
-                for (int i = 0; i < 100; i++) {
-                    if (esPrimo(i)) {
-                        countDigit = i;
-                        printDigit(countDigit);
-                        delay(TIMEDISPLAYON);
+                if (intensidadLuz < 10){
+                    for (int i = 0; i < 100; i++) {
+                        if (esPrimo(i)) {
+                            countDigit = i;
+                            printDigit(countDigit);
+                            delay(TIMEDISPLAYON);
+                        }
                     }
                 }
             }
@@ -708,7 +712,7 @@ void display(int digit) {
     }
 }
 ```
-Codigo parte cuatro del Parcial, el motor solo funciona cuando el sitch esta del lado del contador
+Codigo parte cuatro del Parcial, el motor solo funciona cuando el switch esta del lado del contador
 ```
 // Definición de pines para los displays de 7 segmentos y pines para otros componentes
 #define A 10
@@ -798,18 +802,22 @@ void loop() {
             int interruptor = keypressed();
             printDigit(countDigit);
             if (interruptor == APAGADO) {
-                countDigit++;
-                if (countDigit > 99) {
-                    countDigit = 0;
+                if (intensidadLuz < 10){
+                    countDigit++;
+                    if (countDigit > 99) {
+                        countDigit = 0;
+                    }
+                    delay(TIMEDISPLAYON);
                 }
-                delay(TIMEDISPLAYON);
             } else {
                 digitalWrite(MOTOR_PIN, 0);//el motor al estar el switch en primos se detendra
-                for (int i = 0; i < 100; i++) {
-                    if (esPrimo(i)) {
-                        countDigit = i;
-                        printDigit(countDigit);
-                        delay(TIMEDISPLAYON);
+                if (intensidadLuz < 10){
+                    for (int i = 0; i < 100; i++) {
+                        if (esPrimo(i)) {
+                            countDigit = i;
+                            printDigit(countDigit);
+                            delay(TIMEDISPLAYON);
+                        }
                     }
                 }
             }

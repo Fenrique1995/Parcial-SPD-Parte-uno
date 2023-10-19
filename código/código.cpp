@@ -86,18 +86,22 @@ void loop() {
             int interruptor = keypressed();
             printDigit(countDigit);
             if (interruptor == APAGADO) {
-                countDigit++;
-                if (countDigit > 99) {
-                    countDigit = 0;
+                if (intensidadLuz < 10){
+                    countDigit++;
+                    if (countDigit > 99) {
+                        countDigit = 0;
+                    }
+                    delay(TIMEDISPLAYON);
                 }
-                delay(TIMEDISPLAYON);
             } else {
                 digitalWrite(MOTOR_PIN, 0);//el motor al estar el switch en primos se detendra
-                for (int i = 0; i < 100; i++) {
-                    if (esPrimo(i)) {
-                        countDigit = i;
-                        printDigit(countDigit);
-                        delay(TIMEDISPLAYON);
+                if (intensidadLuz < 10){
+                    for (int i = 0; i < 100; i++) {
+                        if (esPrimo(i)) {
+                            countDigit = i;
+                            printDigit(countDigit);
+                            delay(TIMEDISPLAYON);
+                        }
                     }
                 }
             }
